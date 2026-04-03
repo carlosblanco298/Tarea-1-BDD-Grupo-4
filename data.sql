@@ -1,3 +1,6 @@
+-- Reiniciamos las tablas en caso de que ya estén pobladas para evitar errores de indexación o duplicados.
+TRUNCATE TABLE Sponsor_Torneo, Inscripciones, Estadisticas_Jugador, Partidas, Jugadores, Equipos, Torneos, Sponsors RESTART IDENTITY CASCADE;
+
 -- Como un Equipo necesita un Capitán (que es Jugador) y un Jugador necesita un Equipo,
 -- quitamos la llave foránea un momento para poder cargar los datos.
 ALTER TABLE Equipos DROP CONSTRAINT fk_capitan;
@@ -18,7 +21,7 @@ INSERT INTO Torneos (Nombre, Videojuego, Fecha_Inicio, Fecha_Fin, Prize_Pool, MA
 ('Carreras Callejeras Pro', 'Gran Robo de Autos V', '2026-07-01', '2026-07-05', 20000.00, 8);
 
 -- 10 Equipos.
-INSERT INTO Equipos (Nombre, Fecha_Creacion, ID_Capitan) Values
+INSERT INTO Equipos (Nombre_Equipo, Fecha_Creacion, ID_Capitan) Values
 ('Team Liquidos', '2020-01-15', 'PenS'),
 ('Face Clan', '2019-03-22', 'Bugha_Chueco'),
 ('Maloi', '2021-12-01', 'Ibai_Llanuras'),
