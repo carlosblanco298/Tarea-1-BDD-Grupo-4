@@ -35,8 +35,14 @@ CREATE TABLE Jugadores (
     Nombre_Real VARCHAR(100) NOT NULL,
     Email VARCHAR(100) UNIQUE NOT NULL,
     Fecha_Nacimiento DATE NOT NULL,
-    Pais VARCHAR(50),
-    Nombre_Equipo VARCHAR(100) NOT NULL,
+    Pais VARCHAR(50)
+);
+
+CREATE TABLE Jugador_en_equipo (
+    Gamertag VARCHAR(50),
+    Nombre_Equipo VARCHAR(100),
+    PRIMARY KEY (Gamertag, Nombre_Equipo),
+    FOREIGN KEY (Gamertag) REFERENCES Jugadores(Gamertag),
     FOREIGN KEY (Nombre_Equipo) REFERENCES Equipos(Nombre_Equipo)
 );
 

@@ -1,10 +1,6 @@
 -- Reiniciamos las tablas en caso de que ya estén pobladas para evitar errores de indexación o duplicados.
 TRUNCATE TABLE Sponsor_Torneo, Inscripciones, Estadisticas_Jugador, Partidas, Jugadores, Equipos, Torneos, Sponsors RESTART IDENTITY CASCADE;
 
--- Como un Equipo necesita un Capitán (que es Jugador) y un Jugador necesita un Equipo,
--- quitamos la llave foránea un momento para poder cargar los datos.
-ALTER TABLE Equipos DROP CONSTRAINT fk_capitan;
-
 -- AL menos 5 Sponsors.
 INSERT INTO Sponsors (Nombre, Industria) Values
 ('Red Toro', 'Bebidas Energéticas'),
@@ -20,6 +16,69 @@ INSERT INTO Torneos (Nombre, Videojuego, Fecha_Inicio, Fecha_Fin, Prize_Pool, MA
 ('Mundo de Warcraft Arena Cup', 'Mundo de Warcraft', '2026-06-01', '2026-06-10', 50000.00, 8),
 ('Carreras Callejeras Pro', 'Gran Robo de Autos V', '2026-07-01', '2026-07-05', 20000.00, 8);
 
+-- 5 Jugadores por Equipo, 50 Jugadores en total.
+INSERT INTO Jugadores (Gamertag, Nombre_Real, Email, Fecha_Nacimiento, Pais) VALUES
+-- Team Liquidos
+('PenS', 'Tyson Ngo', 'pens@liquidos.com', '2001-05-05', 'Canadá'),
+('S1mpleton', 'Sasha Kostyliev', 's1mple@liquidos.com', '1997-10-02', 'Ucrania'),
+('Moonral', 'Kyle Jackson', 'moonral@liquidos.com', '2004-08-13', 'Reino Unido'),
+('MergeSort', 'Alan Turing', 'sort@liquidos.com', '1999-01-01', 'Chile'),
+('El_Bicho', 'Cristiano R.', 'bicho@liquidos.com', '1985-02-05', 'Portugal'),
+-- Face Clan
+('Bugha_Chueco', 'Kyle Giersdorf', 'bugha@face.com', '2002-12-30', 'EEUU'),
+('Niko_tina', 'Nikola Kovac', 'niko@face.com', '1997-02-16', 'Bosnia'),
+('Twist_zz', 'Russel Van Dulken', 'twist@face.com', '1999-11-14', 'Canadá'),
+('Karrigan_t', 'Finn Andersen', 'karri@face.com', '1990-04-14', 'Dinamarca'),
+('Ropz_illa', 'Robin Kool', 'ropz@face.com', '1999-12-22', 'Estonia'),
+-- Maloi
+('Ibai_Llanuras', 'Ibai L.', 'ibai@maloi.com', '1995-03-26', 'España'),
+('Mixwell_Hecho', 'Oscar Cañellas', 'mix@maloi.com', '1995-10-10', 'España'),
+('Koldamenta', 'Jose Luis', 'kolda@maloi.com', '1996-05-05', 'España'),
+('Trexx_T-Rex', 'Nikita C.', 'trexx@maloi.com', '2003-01-01', 'Rusia'),
+('Wolfen_stein', 'Kamil S.', 'wolf@maloi.com', '2000-02-02', 'Polonia'),
+-- Krö
+('Aguero_San', 'Sergio A.', 'kun@kro.com', '1988-06-02', 'Argentina'),
+('Keznit_deu', 'Angelo Mori', 'keznit@kro.com', '2001-01-01', 'Chile'),
+('Klaus_trofobia', 'Nicolas F.', 'klaus@kro.com', '2000-11-11', 'Argentina'),
+('Mazino_ino', 'Roberto R.', 'mazi@kro.com', '2001-05-05', 'Chile'),
+('Delz1k_o', 'Joaquin P.', 'delz@kro.com', '2000-03-03', 'Chile'),
+-- Nube9
+('Mang0_Biche', 'Joseph M.', 'mango@nube9.com', '1991-12-10', 'EEUU'),
+('Zellsis_bro', 'Jordan M.', 'zell@nube9.com', '1998-03-02', 'EEUU'),
+('Xeppaa_a', 'Erick B.', 'xepp@nube9.com', '2000-07-07', 'EEUU'),
+('OXY_gen', 'Nathan M.', 'oxy@nube9.com', '2005-01-01', 'EEUU'),
+('Vanity_Fair', 'Anthony M.', 'vanity@nube9.com', '1998-12-12', 'EEUU'),
+-- Sentados
+('SicK_o', 'Hunter M.', 'sick@sentados.com', '1998-09-02', 'EEUU'),
+('Zekken_N', 'Zachary P.', 'zekken@sentados.com', '2005-03-03', 'EEUU'),
+('Sacy_Salsa', 'Gustavo R.', 'sacy@sentados.com', '1997-12-12', 'Brasil'),
+('Pancada_Fuerte', 'Bryan L.', 'pancada@sentados.com', '1999-05-05', 'Brasil'),
+('JohnQT_pie', 'Amine O.', 'john@sentados.com', '1999-01-01', 'Marruecos'),
+-- G-Tres
+('Caps_ula', 'Rasmus B.', 'caps@gtres.com', '1999-11-17', 'Dinamarca'),
+('M0NESY_Money', 'Ilya O.', 'monesy@gtres.com', '2005-05-01', 'Rusia'),
+('NiKo_tina_2', 'Nikola K.', 'niko2@gtres.com', '1997-02-16', 'Bosnia'),
+('Hunter_Recolector', 'Nemanja K.', 'hunter@gtres.com', '1996-01-03', 'Bosnia'),
+('HooXi_Dady', 'Rasmus N.', 'hooxi@gtres.com', '1995-05-21', 'Dinamarca'),
+-- Papel Rex
+('Jinggg_le', 'Wang Jing', 'jing@papelrex.com', '2003-07-29', 'Singapur'),
+('F0rsakeN_o', 'Jason S.', 'forsaken@papelrex.com', '2004-03-25', 'Indonesia'),
+('Mindfreak_out', 'Aaron L.', 'mind@papelrex.com', '1999-10-10', 'Indonesia'),
+('D4v41_AI', 'Khalish R.', 'd4v41@papelrex.com', '1998-11-14', 'Malasia'),
+('Something_Else', 'Ilya P.', 'some@papelrex.com', '2002-02-11', 'Rusia'),
+-- FnatiK
+('Boaster_Toaster', 'Jake Howlett', 'boaster@fnatik.com', '1995-05-25', 'Reino Unido'),
+('Derke_Dark', 'Nikita S.', 'derke@fnatik.com', '2003-02-06', 'Finlandia'),
+('Alfajer_Alfajor', 'Emir Ali', 'alfa@fnatik.com', '2005-06-10', 'Turquía'),
+('Leo_Messi', 'Leo J.', 'leo@fnatik.com', '2003-12-12', 'Suecia'),
+('Chronicle_Books', 'Timofey K.', 'chronicle@fnatik.com', '2002-08-16', 'Rusia'),
+-- Opticos
+('FormaLidad', 'Matthew P.', 'formal@opticos.com', '1995-05-20', 'EEUU'),
+('Scump_Cump', 'Seth A.', 'scump@opticos.com', '1995-06-30', 'EEUU'),
+('Shotzzy_Gun', 'Anthony C.', 'shotzzy@opticos.com', '2001-07-04', 'EEUU'),
+('Pred_ator', 'Amer Z.', 'pred@opticos.com', '2001-10-10', 'Australia'),
+('KennyS_Sniper', 'Kenny S.', 'kenny@opticos.com', '1995-05-19', 'Francia');
+
 -- 10 Equipos.
 INSERT INTO Equipos (Nombre_Equipo, Fecha_Creacion, ID_Capitan) Values
 ('Team Liquidos', '2020-01-15', 'PenS'),
@@ -33,72 +92,68 @@ INSERT INTO Equipos (Nombre_Equipo, Fecha_Creacion, ID_Capitan) Values
 ('FnatiK', '2011-11-11', 'Boaster_Toaster'),
 ('Opticos', '2017-07-07', 'FormaLidad');
 
-
--- 5 Jugadores por Equipo, 50 Jugadores en total.
-INSERT INTO Jugadores (Gamertag, Nombre_Real, Email, Fecha_Nacimiento, Pais, Nombre_Equipo) Values
--- Team Liquidos
-('PenS', 'Tyson Ngo', 'pens@liquidos.com', '2001-05-05', 'Canadá', 'Team Liquidos'),
-('S1mpleton', 'Sasha Kostyliev', 's1mple@liquidos.com', '1997-10-02', 'Ucrania', 'Team Liquidos'),
-('Moonral', 'Kyle Jackson', 'moonral@liquidos.com', '2004-08-13', 'Reino Unido', 'Team Liquidos'),
-('MergeSort', 'Alan Turing', 'sort@liquidos.com', '1999-01-01', 'Chile', 'Team Liquidos'),
-('El_Bicho', 'Cristiano R.', 'bicho@liquidos.com', '1985-02-05', 'Portugal', 'Team Liquidos'),
--- Face Clan
-('Bugha_Chueco', 'Kyle Giersdorf', 'bugha@face.com', '2002-12-30', 'EEUU', 'Face Clan'),
-('Niko_tina', 'Nikola Kovac', 'niko@face.com', '1997-02-16', 'Bosnia', 'Face Clan'),
-('Twist_zz', 'Russel Van Dulken', 'twist@face.com', '1999-11-14', 'Canadá', 'Face Clan'),
-('Karrigan_t', 'Finn Andersen', 'karri@face.com', '1990-04-14', 'Dinamarca', 'Face Clan'),
-('Ropz_illa', 'Robin Kool', 'ropz@face.com', '1999-12-22', 'Estonia', 'Face Clan'),
--- Maloi
-('Ibai_Llanuras', 'Ibai L.', 'ibai@maloi.com', '1995-03-26', 'España', 'Maloi'),
-('Mixwell_Hecho', 'Oscar Cañellas', 'mix@maloi.com', '1995-10-10', 'España', 'Maloi'),
-('Koldamenta', 'Jose Luis', 'kolda@maloi.com', '1996-05-05', 'España', 'Maloi'),
-('Trexx_T-Rex', 'Nikita C.', 'trexx@maloi.com', '2003-01-01', 'Rusia', 'Maloi'),
-('Wolfen_stein', 'Kamil S.', 'wolf@maloi.com', '2000-02-02', 'Polonia', 'Maloi'),
--- Krö
-('Aguero_San', 'Sergio A.', 'kun@kro.com', '1988-06-02', 'Argentina', 'Krö'),
-('Keznit_deu', 'Angelo Mori', 'keznit@kro.com', '2001-01-01', 'Chile', 'Krö'),
-('Klaus_trofobia', 'Nicolas F.', 'klaus@kro.com', '2000-11-11', 'Argentina', 'Krö'),
-('Mazino_ino', 'Roberto R.', 'mazi@kro.com', '2001-05-05', 'Chile', 'Krö'),
-('Delz1k_o', 'Joaquin P.', 'delz@kro.com', '2000-03-03', 'Chile', 'Krö'),
--- Nube9
-('Mang0_Biche', 'Joseph M.', 'mango@nube9.com', '1991-12-10', 'EEUU', 'Nube9'),
-('Zellsis_bro', 'Jordan M.', 'zell@nube9.com', '1998-03-02', 'EEUU', 'Nube9'),
-('Xeppaa_a', 'Erick B.', 'xepp@nube9.com', '2000-07-07', 'EEUU', 'Nube9'),
-('OXY_gen', 'Nathan M.', 'oxy@nube9.com', '2005-01-01', 'EEUU', 'Nube9'),
-('Vanity_Fair', 'Anthony M.', 'vanity@nube9.com', '1998-12-12', 'EEUU', 'Nube9'),
--- Sentados
-('SicK_o', 'Hunter M.', 'sick@sentados.com', '1998-09-02', 'EEUU', 'Sentados'),
-('Zekken_N', 'Zachary P.', 'zekken@sentados.com', '2005-03-03', 'EEUU', 'Sentados'),
-('Sacy_Salsa', 'Gustavo R.', 'sacy@sentados.com', '1997-12-12', 'Brasil', 'Sentados'),
-('Pancada_Fuerte', 'Bryan L.', 'pancada@sentados.com', '1999-05-05', 'Brasil', 'Sentados'),
-('JohnQT_pie', 'Amine O.', 'john@sentados.com', '1999-01-01', 'Marruecos', 'Sentados'),
--- G-Tres
-('Caps_ula', 'Rasmus B.', 'caps@gtres.com', '1999-11-17', 'Dinamarca', 'G-Tres'),
-('M0NESY_Money', 'Ilya O.', 'monesy@gtres.com', '2005-05-01', 'Rusia', 'G-Tres'),
-('NiKo_tina_2', 'Nikola K.', 'niko2@gtres.com', '1997-02-16', 'Bosnia', 'G-Tres'),
-('Hunter_Recolector', 'Nemanja K.', 'hunter@gtres.com', '1996-01-03', 'Bosnia', 'G-Tres'),
-('HooXi_Dady', 'Rasmus N.', 'hooxi@gtres.com', '1995-05-21', 'Dinamarca', 'G-Tres'),
--- Papel Rex
-('Jinggg_le', 'Wang Jing', 'jing@papelrex.com', '2003-07-29', 'Singapur', 'Papel Rex'),
-('F0rsakeN_o', 'Jason S.', 'forsaken@papelrex.com', '2004-03-25', 'Indonesia', 'Papel Rex'),
-('Mindfreak_out', 'Aaron L.', 'mind@papelrex.com', '1999-10-10', 'Indonesia', 'Papel Rex'),
-('D4v41_AI', 'Khalish R.', 'd4v41@papelrex.com', '1998-11-14', 'Malasia', 'Papel Rex'),
-('Something_Else', 'Ilya P.', 'some@papelrex.com', '2002-02-11', 'Rusia', 'Papel Rex'),
--- FnatiK
-('Boaster_Toaster', 'Jake Howlett', 'boaster@fnatik.com', '1995-05-25', 'Reino Unido', 'FnatiK'),
-('Derke_Dark', 'Nikita S.', 'derke@fnatik.com', '2003-02-06', 'Finlandia', 'FnatiK'),
-('Alfajer_Alfajor', 'Emir Ali', 'alfa@fnatik.com', '2005-06-10', 'Turquía', 'FnatiK'),
-('Leo_Messi', 'Leo J.', 'leo@fnatik.com', '2003-12-12', 'Suecia', 'FnatiK'),
-('Chronicle_Books', 'Timofey K.', 'chronicle@fnatik.com', '2002-08-16', 'Rusia', 'FnatiK'),
--- Opticos
-('FormaLidad', 'Matthew P.', 'formal@opticos.com', '1995-05-20', 'EEUU', 'Opticos'),
-('Scump_Cump', 'Seth A.', 'scump@opticos.com', '1995-06-30', 'EEUU', 'Opticos'),
-('Shotzzy_Gun', 'Anthony C.', 'shotzzy@opticos.com', '2001-07-04', 'EEUU', 'Opticos'),
-('Pred_ator', 'Amer Z.', 'pred@opticos.com', '2001-10-10', 'Australia', 'Opticos'),
-('KennyS_Sniper', 'Kenny S.', 'kenny@opticos.com', '1995-05-19', 'Francia', 'Opticos');
-
--- Devolver la llave foranea de capitán.
-ALTER TABLE Equipos ADD CONSTRAINT fk_capitan FOREIGN KEY (ID_Capitan) REFERENCES Jugadores(Gamertag);
+-- Jugador_en_equipo, 5 por equipo,
+INSERT INTO Jugador_en_equipo (Gamertag, Nombre_Equipo) VALUES
+-- Team Liquidos (5 jugadores)
+('PenS', 'Team Liquidos'),
+('S1mpleton', 'Team Liquidos'),
+('Moonral', 'Team Liquidos'),
+('MergeSort', 'Team Liquidos'),
+('El_Bicho', 'Team Liquidos'),
+-- Face Clan (5 jugadores)
+('Bugha_Chueco', 'Face Clan'),
+('Niko_tina', 'Face Clan'),
+('Twist_zz', 'Face Clan'),
+('Karrigan_t', 'Face Clan'),
+('Ropz_illa', 'Face Clan'),
+-- Maloi (5 jugadores)
+('Ibai_Llanuras', 'Maloi'),
+('Mixwell_Hecho', 'Maloi'),
+('Koldamenta', 'Maloi'),
+('Trexx_T-Rex', 'Maloi'),
+('Wolfen_stein', 'Maloi'),
+-- Krö (5 jugadores)
+('Aguero_San', 'Krö'),
+('Keznit_deu', 'Krö'),
+('Klaus_trofobia', 'Krö'),
+('Mazino_ino', 'Krö'),
+('Delz1k_o', 'Krö'),
+-- Nube9 (5 jugadores)
+('Mang0_Biche', 'Nube9'),
+('Zellsis_bro', 'Nube9'),
+('Xeppaa_a', 'Nube9'),
+('OXY_gen', 'Nube9'),
+('Vanity_Fair', 'Nube9'),
+-- Sentados (5 jugadores)
+('SicK_o', 'Sentados'),
+('Zekken_N', 'Sentados'),
+('Sacy_Salsa', 'Sentados'),
+('Pancada_Fuerte', 'Sentados'),
+('JohnQT_pie', 'Sentados'),
+-- G-Tres (5 jugadores)
+('Caps_ula', 'G-Tres'),
+('M0NESY_Money', 'G-Tres'),
+('NiKo_tina_2', 'G-Tres'),
+('Hunter_Recolector', 'G-Tres'),
+('HooXi_Dady', 'G-Tres'),
+-- Papel Rex (5 jugadores)
+('Jinggg_le', 'Papel Rex'),
+('F0rsakeN_o', 'Papel Rex'),
+('Mindfreak_out', 'Papel Rex'),
+('D4v41_AI', 'Papel Rex'),
+('Something_Else', 'Papel Rex'),
+-- FnatiK (5 jugadores)
+('Boaster_Toaster', 'FnatiK'),
+('Derke_Dark', 'FnatiK'),
+('Alfajer_Alfajor', 'FnatiK'),
+('Leo_Messi', 'FnatiK'),
+('Chronicle_Books', 'FnatiK'),
+-- Opticos (5 jugadores)
+('FormaLidad', 'Opticos'),
+('Scump_Cump', 'Opticos'),
+('Shotzzy_Gun', 'Opticos'),
+('Pred_ator', 'Opticos'),
+('KennyS_Sniper', 'Opticos');
 
 -- Sponsors para cada torneo.
 INSERT INTO Sponsor_Torneo (ID_Sponsor, ID_Torneo, Monto_Aporte) VALUES
