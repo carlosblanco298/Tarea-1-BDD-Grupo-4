@@ -71,7 +71,7 @@ CREATE TABLE Partidas (
     Score_B INT DEFAULT 0,
     Fase VARCHAR(20),
     CONSTRAINT chk_fase CHECK (Fase IN ('fase de grupos', 'cuartos de final', 'semifinal', 'final')),
-    CONSTRAINT chk_distintos CHECK (Equipo_A <> Equipo_B)
+    CONSTRAINT chk_distintos CHECK (Equipo_A <> Equipo_B),
     FOREIGN KEY (ID_Torneo) REFERENCES Torneos(ID_Torneo),
     FOREIGN KEY (Equipo_A) REFERENCES Equipos(Nombre_Equipo),
     FOREIGN KEY (Equipo_B) REFERENCES Equipos(Nombre_Equipo)
