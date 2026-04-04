@@ -41,7 +41,7 @@ CREATE TABLE Jugadores (
 CREATE TABLE Jugador_en_equipo (
     Gamertag VARCHAR(50),
     Nombre_Equipo VARCHAR(100),
-    PRIMARY KEY (Gamertag, Nombre_Equipo),
+    PRIMARY KEY (Gamertag),
     FOREIGN KEY (Gamertag) REFERENCES Jugadores(Gamertag),
     FOREIGN KEY (Nombre_Equipo) REFERENCES Equipos(Nombre_Equipo)
 );
