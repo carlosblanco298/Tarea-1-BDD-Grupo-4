@@ -76,7 +76,7 @@ def get_tournament_details(tournament_id):
                     equipo,
                     SUM(jugada) AS partidas_jugadas,
                     SUM(ganada) AS ganadas,
-                    SUM(empatadas) AS empatadas,
+                    SUM(empatada) AS empatadas,
                     SUM(perdida) AS perdidas,
                     SUM(puntos) AS puntaje_total
                 FROM Stats
