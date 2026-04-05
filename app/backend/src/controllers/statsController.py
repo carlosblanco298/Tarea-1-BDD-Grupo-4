@@ -8,17 +8,19 @@ def get_players_ranking():
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute("""
             SELECT 
+                DENSE_RANK() OVER(ORDER BY
+                    COALESCE(ROUND(CAST(SUM(ED.kos) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2), 0) DESC
+                ) AS posicion_ranking,
                 JE.gamertag,
                 JE.nombre_equipo,
                 SUM(ED.kos) AS total_kos, 
                 SUM(ED.restarts) AS total_restarts, 
                 SUM(ED.assists) AS total_assists, 
-                COUNT(ED.id_partida) AS partidas,
                 COALESCE(ROUND(CAST(SUM(ED.kos) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2), 0)::FLOAT AS kd_ratio
             FROM jugador_en_equipo JE
             JOIN estadisticas_jugador ED ON JE.gamertag = ED.gamertag
             GROUP BY JE.gamertag, JE.nombre_equipo
-            HAVING COUNT(ED.id_partida) > 2
+            HAVING COUNT(ED.id_partida) >= 2
             ORDER BY kd_ratio DESC;
             """)
             result = cursor.fetchall()
