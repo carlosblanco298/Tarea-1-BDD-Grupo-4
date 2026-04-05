@@ -1,5 +1,5 @@
 -- Reiniciamos las tablas en caso de que ya estén pobladas para evitar errores de indexación o duplicados.
-TRUNCATE TABLE Sponsor_Torneo, Inscripciones, Estadisticas_Jugador, Partidas, Jugadores, Equipos, Torneos, Sponsors RESTART IDENTITY CASCADE;
+TRUNCATE TABLE Sponsor_Torneo, Inscripciones, Estadisticas_Jugador, Partidas, Jugador_en_equipo, Jugadores, Equipos, Torneos, Sponsors RESTART IDENTITY CASCADE;
 
 -- AL menos 5 Sponsors.
 INSERT INTO Sponsors (Nombre, Industria) Values
