@@ -8,7 +8,7 @@ def get_players_ranking():
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute("""
             SELECT 
-                DENSE_RANK() OVER(ORDER BY
+                RANK() OVER(ORDER BY
                     COALESCE(ROUND(CAST(SUM(ED.kos) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2), 0) DESC
                 ) AS posicion_ranking,
                 JE.gamertag,
