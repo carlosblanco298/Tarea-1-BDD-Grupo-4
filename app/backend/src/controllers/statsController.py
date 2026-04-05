@@ -39,40 +39,40 @@ def get_team_evolution(name):
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             if name != "none":
                 cursor.execute("""
-                SELECT 
-                    CASE
-                        WHEN P.fase = 'fase de grupos' THEN 'Fase de Grupos'
-                        WHEN P.fase IN ('semifinal', 'final') THEN 'Eliminatorias'
-                    END AS etapa,
-                    ROUND(AVG(ED.kos), 2)::FLOAT AS kos_avg, 
-                    ROUND(AVG(ED.restarts), 2)::FLOAT AS restarts_avg, 
-                    ROUND(AVG(ED.assists), 2)::FLOAT AS assists_avg
-                FROM jugador_en_equipo JE
-                JOIN estadisticas_jugador ED ON JE.gamertag = ED.gamertag
-                JOIN partidas P ON ED.id_partida = P.id_partida
-                WHERE JE.nombre_equipo = %s
-                GROUP BY etapa
-                ORDER BY etapa DESC;
+                WITH EstadisticasBase AS (
+                    SELECT
+                        JE.gamertag,
+                        CASE
+                            WHEN P.fase = 'fase de grupos' THEN 'Fase de Grupos'
+                            WHEN P.fase IN ('semifinal', 'final') THEN 'Eliminatorias'
+                        END AS etapa,
+                        ROUND(AVG(ED.kos), 2)::FLOAT AS kos_avg, 
+                        ROUND(AVG(ED.restarts), 2)::FLOAT AS restarts_avg, 
+                        ROUND(AVG(ED.assists), 2)::FLOAT AS assists_avg,
+                        ROUND(CAST(SUM(ED.kos) + SUM(ED.assists) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2)::FLOAT AS kda
+                    FROM jugador_en_equipo JE
+                    JOIN estadisticas_jugador ED ON JE.gamertag = ED.gamertag
+                    JOIN partidas P ON ED.id_partida = P.id_partida
+                    WHERE JE.nombre_equipo = %s
+                    GROUP BY (JE.gamertag, etapa)
+                ), CalculoCrecimiento AS (
+                    SELECT 
+                        *,
+                        COALESCE(ROUND(CAST(kda - LAG(kda) OVER(PARTITION BY gamertag) AS NUMERIC), 2), 0
+                    )::FLOAT AS crecimiento_kda
+                    FROM EstadisticasBase
+                )
+                SELECT * FROM CalculoCrecimiento
+                ORDER BY 
+                    MAX(crecimiento_kda) OVER(PARTITION BY gamertag) DESC,
+                    gamertag ASC,
+                    etapa ASC;
                 """, (name,))
-            else:
-                cursor.execute("""
-                SELECT 
-                    nombre_equipo,
-                    CASE
-                        WHEN P.fase = 'fase de grupos' THEN 'Fase de Grupos'
-                        WHEN P.fase IN ('semifinal', 'final') THEN 'Eliminatorias'
-                    END AS etapa,
-                    ROUND(AVG(ED.kos), 2)::FLOAT AS kos_avg, 
-                    ROUND(AVG(ED.restarts), 2)::FLOAT AS restarts_avg, 
-                    ROUND(AVG(ED.assists), 2)::FLOAT AS assists_avg
-                FROM jugador_en_equipo JE
-                JOIN estadisticas_jugador ED ON JE.gamertag = ED.gamertag
-                JOIN partidas P ON ED.id_partida = P.id_partida
-                GROUP BY (nombre_equipo, etapa)
-                ORDER BY (nombre_equipo) DESC;
-                """)
 
-            result = cursor.fetchall()
+                result = cursor.fetchall()
+
+            else:
+                result = "Por favor. Ingrese el nombre del equipo que desea revisar."
 
         return {"team_name": name, "result": result}
     except Exception as e:
