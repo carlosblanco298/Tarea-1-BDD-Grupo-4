@@ -29,7 +29,7 @@ def tournament_enrollment(team_name, tournament_name):
             enrollment = cursor.fetchone()
 
             if enrollment:
-                return {"status": "success", "message": "Team is already enrolled in this tournament"}
+                return {"status": "conflict", "message": "Team is already enrolled in this tournament"}, 409
             
             # En caso de no estar inscrito. Lo inscribimos
 
@@ -51,7 +51,7 @@ def tournament_enrollment(team_name, tournament_name):
                 conn.commit()
                 return {"status": "success", "data": new_row}, 201
             else:
-                return {"status": "failed", "message": "Tournament full or team missing"}, 400
+                return {"status": "failed", "message": "Tournament full or team missing"}, 404
 
     except Exception as e:
         if conn:

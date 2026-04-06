@@ -6,8 +6,8 @@ inscription_bp = Blueprint('inscription', __name__)
 @inscription_bp.route('', methods=["POST"])
 def enroll_team():
     try:
-        team_name = request.args.get('team_name')
-        tournament_name = request.args.get('tournament_name')
+        team_name = request.form.get('team_name')
+        tournament_name = request.form.get('tournament_name')
         if not team_name or not tournament_name:
             raise ValueError("All fields are required and cannot be empty")
 
