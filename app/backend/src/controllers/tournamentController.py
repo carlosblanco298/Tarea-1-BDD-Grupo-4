@@ -6,6 +6,7 @@ def get_all_tournaments():
     try:
         conn = get_db()
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            # Listar todos los torneos con su información básica.
             cursor.execute("""
                 SELECT id_torneo, nombre, videojuego, fecha_inicio, fecha_fin, prize_pool, max_equipos 
                 FROM Torneos
@@ -24,7 +25,8 @@ def get_tournament_details(tournament_id):
     try:
         conn = get_db()
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            
+            # Las partidas jugadas con sus resultados.
+
             cursor.execute("""
                 SELECT nombre_equipo 
                 FROM Inscripciones 
