@@ -2,9 +2,13 @@ from flask import Flask
 from dotenv import load_dotenv
 from routes.enrollmentRoute import inscription_bp
 
+from routes.searchRoute import search_bp
+
 load_dotenv()
 
 app = Flask(__name__)
+
+app.register_blueprint(search_bp, url_prefix='/api/search')
 
 app.register_blueprint(inscription_bp, url_prefix='/api/team_enrollment')
 
