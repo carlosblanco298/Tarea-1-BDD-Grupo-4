@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Inicializamos el pool una vez que la app inicia
 connection_pool = pool.ThreadedConnectionPool(
     1, 20,
     host=os.getenv("DB_HOST"),
@@ -15,9 +14,7 @@ connection_pool = pool.ThreadedConnectionPool(
 )
 
 def get_db():
-    # Obtener una conexión al pool
     return connection_pool.getconn()
 
 def release_db(conn):
-    # Devolver la conexión al pool en lugar de cerrarla
     connection_pool.putconn(conn)
