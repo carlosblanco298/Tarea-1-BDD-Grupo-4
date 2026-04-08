@@ -1,7 +1,6 @@
 from flask import Flask
 from dotenv import load_dotenv
 from routes.enrollmentRoute import inscription_bp
-
 from routes.searchRoute import search_bp
 
 load_dotenv()
