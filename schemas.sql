@@ -27,7 +27,7 @@ CREATE TABLE Torneos (
 CREATE TABLE Equipos (
     Nombre_Equipo VARCHAR(100) PRIMARY KEY,
     Fecha_Creacion DATE NOT NULL,
-    ID_Capitan VARCHAR(50) NOT NULL
+    Gamertag_Capitan VARCHAR(50)
 );
 
 CREATE TABLE Jugadores (
@@ -36,13 +36,18 @@ CREATE TABLE Jugadores (
     Email VARCHAR(100) UNIQUE NOT NULL,
     Fecha_Nacimiento DATE NOT NULL,
     Pais VARCHAR(50),
-    Nombre_Equipo VARCHAR(100) NOT NULL,
-    FOREIGN KEY (Nombre_Equipo) REFERENCES Equipos(Nombre_Equipo)
+    Nombre_Equipo VARCHAR(100)
 );
 
 ALTER TABLE Equipos 
 ADD CONSTRAINT fk_capitan
-FOREIGN KEY (ID_Capitan) REFERENCES Jugadores(Gamertag);
+FOREIGN KEY (Gamertag_Capitan) REFERENCES Jugadores(Gamertag)
+DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE Jugadores
+ADD CONSTRAINT fk_equipo
+FOREIGN KEY (Nombre_Equipo) REFERENCES Equipos(Nombre_Equipo)
+DEFERRABLE INITIALLY DEFERRED;
 
 CREATE TABLE Sponsor_Torneo (
     ID_Sponsor INT,
