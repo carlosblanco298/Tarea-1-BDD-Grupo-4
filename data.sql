@@ -21,7 +21,7 @@ INSERT INTO Torneos (Nombre, Videojuego, Fecha_Inicio, Fecha_Fin, Prize_Pool, MA
 ('Carreras Callejeras Pro', 'Gran Robo de Autos V', '2026-07-01', '2026-07-05', 20000.00, 8);
 
 -- 10 Equipos.
-INSERT INTO Equipos (Nombre_Equipo, Fecha_Creacion, ID_Capitan) Values
+INSERT INTO Equipos (Nombre_Equipo, Fecha_Creacion, Gamertag_Capitan) Values
 ('Team Liquidos', '2020-01-15', 'PenS'),
 ('Face Clan', '2019-03-22', 'Bugha_Chueco'),
 ('Maloi', '2021-12-01', 'Ibai_Llanuras'),
@@ -98,7 +98,7 @@ INSERT INTO Jugadores (Gamertag, Nombre_Real, Email, Fecha_Nacimiento, Pais, Nom
 ('KennyS_Sniper', 'Kenny S.', 'kenny@opticos.com', '1995-05-19', 'Francia', 'Opticos');
 
 -- Devolver la llave foranea de capitán.
-ALTER TABLE Equipos ADD CONSTRAINT fk_capitan FOREIGN KEY (ID_Capitan) REFERENCES Jugadores(Gamertag);
+ALTER TABLE Equipos ADD CONSTRAINT fk_capitan FOREIGN KEY (Gamertag_Capitan) REFERENCES Jugadores(Gamertag);
 
 -- Sponsors para cada torneo.
 INSERT INTO Sponsor_Torneo (ID_Sponsor, ID_Torneo, Monto_Aporte) VALUES
