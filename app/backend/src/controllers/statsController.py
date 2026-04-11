@@ -7,21 +7,27 @@ def get_players_ranking():
         conn = get_db()
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute("""
-            SELECT 
-                RANK() OVER(ORDER BY
-                    COALESCE(ROUND(CAST(SUM(ED.kos) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2), 0) DESC
-                ) AS posicion_ranking,
-                JE.gamertag,
+            SELECT RANK() OVER(ORDER BY kd_ratio DESC) AS posicion_ranking,
+                T.gamertag,
                 JE.nombre_equipo,
-                SUM(ED.kos) AS total_kos, 
-                SUM(ED.restarts) AS total_restarts, 
-                SUM(ED.assists) AS total_assists, 
-                COALESCE(ROUND(CAST(SUM(ED.kos) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2), 0)::FLOAT AS kd_ratio
-            FROM jugador_en_equipo JE
-            JOIN estadisticas_jugador ED ON JE.gamertag = ED.gamertag
-            GROUP BY JE.gamertag, JE.nombre_equipo
-            HAVING COUNT(ED.id_partida) >= 2
-            ORDER BY kd_ratio DESC;
+                T.total_kos,
+                T.total_restarts,
+                T.total_assists,
+                T.kd_ratio
+            FROM (
+                SELECT gamertag,
+                SUM(kos) AS total_kos,
+                SUM(restarts) AS total_restarts,
+                SUM(assists) AS total_assists,
+                COUNT(id_partida) AS partidas,
+                COALESCE(ROUND(CAST(SUM(kos) AS NUMERIC) / NULLIF(SUM(restarts), 0), 2), 0) AS kd_ratio
+                FROM Estadisticas_Jugador
+                GROUP BY gamertag
+                HAVING COUNT(id_partida) >= 2
+            ) as T
+            JOIN (
+                SELECT gamertag, nombre_equipo FROM Jugadores
+            ) as JE ON JE.gamertag = T.gamertag
             """)
             result = cursor.fetchall()
 
@@ -39,34 +45,26 @@ def get_team_evolution(name):
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             if name != "none":
                 cursor.execute("""
-                WITH EstadisticasBase AS (
+                SELECT *,
+                    COALESCE(ROUND(CAST(kda - LAG(kda) OVER(PARTITION BY gamertag ORDER BY etapa ASC) AS NUMERIC), 2), 0)::FLOAT AS crecimiento_kda
+                FROM (
                     SELECT
-                        JE.gamertag,
+                        ED.gamertag,
                         CASE
-                            WHEN P.fase = 'fase de grupos' THEN 'Fase de Grupos'
-                            WHEN P.fase IN ('semifinal', 'final') THEN 'Eliminatorias'
+                            WHEN P.fase = 'fase de grupos' THEN '1. Fase de Grupos'
+                            WHEN P.fase IN ('semifinal', 'final') THEN '2. Eliminatorias'
                         END AS etapa,
-                        ROUND(AVG(ED.kos), 2)::FLOAT AS kos_avg, 
-                        ROUND(AVG(ED.restarts), 2)::FLOAT AS restarts_avg, 
+                        ROUND(AVG(ED.KOS), 2)::FLOAT AS kos_avg,
+                        ROUND(AVG(ED.restarts), 2)::FLOAT AS restarts_avg,
                         ROUND(AVG(ED.assists), 2)::FLOAT AS assists_avg,
                         ROUND(CAST(SUM(ED.kos) + SUM(ED.assists) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2)::FLOAT AS kda
-                    FROM jugador_en_equipo JE
-                    JOIN estadisticas_jugador ED ON JE.gamertag = ED.gamertag
-                    JOIN partidas P ON ED.id_partida = P.id_partida
-                    WHERE JE.nombre_equipo = %s
-                    GROUP BY (JE.gamertag, etapa)
-                ), CalculoCrecimiento AS (
-                    SELECT 
-                        *,
-                        COALESCE(ROUND(CAST(kda - LAG(kda) OVER(PARTITION BY gamertag) AS NUMERIC), 2), 0
-                    )::FLOAT AS crecimiento_kda
-                    FROM EstadisticasBase
-                )
-                SELECT * FROM CalculoCrecimiento
-                ORDER BY 
-                    MAX(crecimiento_kda) OVER(PARTITION BY gamertag) DESC,
-                    gamertag ASC,
-                    etapa ASC;
+                    FROM Estadisticas_Jugador ED
+                    JOIN Partidas P ON P.id_partida = ED.id_partida
+                    JOIN Jugadores AS J ON J.gamertag = ED.gamertag
+                    WHERE J.nombre_equipo = %s
+                    GROUP BY ED.gamertag, etapa
+                ) as sub
+                ORDER BY gamertag, etapa;
                 """, (name,))
 
                 result = cursor.fetchall()
