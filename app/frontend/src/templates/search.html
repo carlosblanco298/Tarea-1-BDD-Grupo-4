@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Busqueda{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Buscador de Jugadores y Equipos</h1>
+
+    <div class ="search-box">
+        <select id="search-type">
+            <option value="players">Jugadores (Gamertag o País)</option>
+            <option value="teams">Equipos (nombre)</option>
+        </select>
+
+        <input type="text" id="search-input" placeholder="Ingresa tu búsqueda...">
+        <button onclick="performSearch()">Buscar</button>
+    </div>
+
+    <table id="players-table" style="display:none">
+        <thead>
+            <tr>
+                <th>Gamertag</th>
+                <th>Nombre Real</th>
+                <th>País</th>
+                <th>Equipo</th>
+            </tr>
+        </thead>
+        <tbody id="players-body"></tbody>
+    </table>
+    
+    <table id="teams-table" style="display:none">
+        <thead>
+            <tr>
+                <th>Nombre Equipo</th>
+                <th>Fecha Creación</th>
+                <th>Capitán</th>
+            </tr>
+        </thead>
+        <tbody id="teams-body"></tbody>
+    </table>"
+</div>
+
+<script>
+async function performSearch() {
+    const type = document.getElementById('search-type').value;
+    const query = document.getElementById('search-input').values;
+
+    document.getElementById('players-table').style.display = 'none';
+    document.getElementById('teams-table').style.display = 'none';
+
+    if (type === 'players') {
+        const response = await fetch(`/api/search/players?q=${query}`);
+        const result = await response.json();
+
+        const tbody = document.getElementById('players-body');
+        tbody.innerHTML = '';
+        
+        result.data.forEach(player => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${player.gamertag}</td>
+                    <td>${player.nombre_real}</td>
+                    <td>${player.pais}</td>
+                    <td>${player.nombre_equipo}</td>
+                </tr>
+            `;
+        });
+        document.getElementById('players-table').style.display = 'table';
+    } else {
+        const response = await fetch(`/api/search/teams?q=${query}`);
+        const result = await response.json();
+
+        const tbody = document.getElementById('teams-body');
+        tbody.innerHTML = '';
+
+        result.data.forEach(team => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${team.nombre_equipo}</td>
+                    <td>${team.fecha_creacion}</td>
+                    <td>${team.capitan}</td>
+                </tr>
+            `;
+        });
+        document.getElementById('teams-table').style.display = 'table';
+    }
+}
+</script>
+{%endblock %}
