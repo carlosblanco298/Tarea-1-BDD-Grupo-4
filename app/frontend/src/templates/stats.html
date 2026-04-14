@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Sponsors{% endblock %}
+{% block title %}Página de Estadísticas{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -14,6 +14,7 @@
         </select>
 
         <input type="text" style="display: none" id="team_name" placeholder="Ej. Sentados" value="">
+        <input type="text" id="tournament_name" placeholder="Ej. Calorant Champions Tour" value="">
 
         <button onclick="fetchStats()">Buscar</button>
     </div>
@@ -35,8 +36,9 @@
             const table = document.getElementById("table");
             if (tipo_ranking !== "jugadores") {
                 const team_name = document.getElementById('team_name').value
+                const tournament_name = document.getElementById('tournament_name').value
                 document.getElementById("team_name").style.display = "inline"
-                response = await fetch(endpoint + `?team_name=${team_name}`);
+                response = await fetch(endpoint + `?team_name=${team_name}&tournament_name=${tournament_name}`);
                 table.innerHTML = "<tr><th>Gamertag</th><th>Etapa</th><th>KDA</th><th>kos_avg</th><th>restarts_avg</th><th>crecimiento_kda</th>";
             
                 const data = await response.json();
@@ -49,7 +51,8 @@
 
             } else {
                 document.getElementById("team_name").style.display = "none"
-                response = await fetch(endpoint);
+                const tournament_name = document.getElementById('tournament_name').value
+                response = await fetch(endpoint + `?tournament_name=${tournament_name}`);
                 table.innerHTML = "<tr><th>Gamertag</th><th>kd_ratio</th><th>nombre_equipo</th><th>ranking</th><th>total_assists</th><th>total_kos</th><th>total_restarts</th></tr>";
             
                 const data = await response.json();
