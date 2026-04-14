@@ -11,7 +11,7 @@
         <button onclick="fetchSponsors()">Buscar</button>
     </div>
 
-    <table id="sponsors-table" style="display:none">
+    <table id="table" style="display:none">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -43,7 +43,7 @@ async function fetchSponsors() {
         `;
     });
 
-    document.getElementById('sponsors-table').style.display = 'table';
+    document.getElementById('table').style.display = 'table';
 }
 </script>
 {% endblock %}
