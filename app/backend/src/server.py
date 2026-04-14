@@ -1,6 +1,5 @@
 import os
 from flask import Flask, render_template
-from dotenv import load_dotenv
 from routes.statsRoute import stats_bp
 from routes.sponsorsRoute import sponsor_bp
 from routes.enrollmentRoute import inscription_bp
@@ -29,6 +28,10 @@ def index():
 @app.route('/sponsors')
 def sponsors():
     return render_template('sponsors.html')
+
+@app.route('/stats')
+def stats():
+    return render_template('stats.html')
 
 if __name__ == "__main__":
     app.run(host="localhost", port=3000)
