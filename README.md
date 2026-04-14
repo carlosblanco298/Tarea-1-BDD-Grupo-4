@@ -25,7 +25,7 @@
    source venv/bin/activate  # En Windows: venv\Scripts\activate
    ```
 2. **Instalar dependencias:**
-   No se ha encontrado un archivo `requirements.txt`. Asumiendo que las dependencias son `flask`, `psycopg2-binary` y `python-dotenv`, puedes instalarlas con:
+  Las dependencias son `flask`, `psycopg2-binary` y `python-dotenv`, puedes instalarlas con:
    ```bash
    pip install flask psycopg2-binary python-dotenv
    ```
