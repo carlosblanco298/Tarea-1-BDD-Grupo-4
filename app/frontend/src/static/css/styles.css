@@ -1,0 +1,29 @@
+/* Estilo tabla de estadísticas */
+#table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 16px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+}
+
+#table th,
+#table td {
+	border: 1px solid #d0d0d0;
+	text-align: left;
+	padding: 8px 10px;
+}
+
+#table thead th,
+#table tr:first-child th {
+	background-color: #efefef;
+	font-weight: 700;
+}
+
+#table tr:nth-child(even) td {
+	background-color: #f4f4f4;
+}
+
+#table tr:hover td {
+	background-color: #e4e7eb;
+}
