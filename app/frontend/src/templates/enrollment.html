@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Sponsors{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Inscripción a Torneo</h1>
+    <p>Si desea inscribir un equipo a un torneo llene este formulario.</p>
+
+    <form id="enroll_form" action="/api/team_enrollment" method="POST" style="display: flex; flex-direction: column; max-width: 50vw;">
+        <label for="tournament_name">Nombre del Torneo</label>
+        <input type="text" name="tournament_name" required>
+        <label for="team_name">Nombre del Equipo</label>
+        <input type="text" name="team_name" required>
+        <button type="submit" id="enroll_button">Inscribir equipo</button>
+    </form>
+
+    <p id="status_message"></p>
+</div>
+
+<script>
+    const enroll_form = document.getElementById("enroll_form");
+    enroll_form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(enroll_form);
+        const payload = {
+            tournament_name: formData.get("tournament_name"),
+            team_name: formData.get("team_name")
+        };
+
+        const response = await fetch("/api/team_enrollment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        console.log(response.status, data);
+
+        const status_message = document.getElementById("status_message")
+        if (data.status === "success") {
+            status_message.style.color = "green";
+        } else {
+            status_message.style.color = "red";
+        }
+
+        status_message.innerText = data.message;
+    });
+</script>
+
+{% endblock %}

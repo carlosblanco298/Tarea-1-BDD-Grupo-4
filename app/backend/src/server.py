@@ -30,5 +30,9 @@ def index():
 def sponsors():
     return render_template('sponsors.html')
 
+@app.route('/enrollment')
+def enrollment():
+    return render_template('enrollment.html')
+
 if __name__ == "__main__":
     app.run(host="localhost", port=3000)
