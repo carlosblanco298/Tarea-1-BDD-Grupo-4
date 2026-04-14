@@ -27,7 +27,7 @@ def search_teams(query):
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             # Buscamos equipos por nombre.
             cursor.execute("""
-                SELECT nombre_equipo, fecha_creacion, id_capitan
+                SELECT nombre_equipo, fecha_creacion, gamertag_capitan
                 FROM equipos
                 WHERE nombre_equipo ILIKE %s;
             """, (f'%{query}%',))
