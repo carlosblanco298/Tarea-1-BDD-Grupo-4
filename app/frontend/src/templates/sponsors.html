@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Sponsors{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Sponsors por Videojuego</h1>
+    
+    <div class="search">
+        <input type="text" id="videogame-input" placeholder="Ej: Calorant">
+        <button onclick="fetchSponsors()">Buscar</button>
+    </div>
+
+    <table id="table" style="display:none">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Industria</th>
+                <th>Total Aportado</th>
+            </tr>
+        </thead>
+        <tbody id="sponsors-body">
+        </tbody>
+    </table>
+</div>
+
+<script>
+async function fetchSponsors() {
+    const videogame = document.getElementById('videogame-input').value;
+    const response = await fetch(`/api/sponsors/${videogame}`);
+    const data = await response.json();
+    
+    const tbody = document.getElementById('sponsors-body');
+    tbody.innerHTML = '';
+    
+    data.data.forEach(sponsor => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${sponsor.nombre}</td>
+                <td>${sponsor.industria}</td>
+                <td>${sponsor.total_aportado}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('table').style.display = 'table';
+}
+</script>
+{% endblock %}
