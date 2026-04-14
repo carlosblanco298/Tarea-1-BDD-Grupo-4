@@ -29,6 +29,18 @@ def index():
 def sponsors():
     return render_template('sponsors.html')
 
+@app.route('/search')
+def search_page():
+    return render_template('search.html')
+
+@app.route('/torneos')
+def torneos_page():
+    return render_template('torneos.html')
+
+@app.route('/enrollment')
+def enrollment():
+    return render_template('enrollment.html')
+
 @app.route('/stats')
 def stats():
     return render_template('stats.html')
