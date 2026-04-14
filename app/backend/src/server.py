@@ -29,6 +29,9 @@ def index():
 def sponsors():
     return render_template('sponsors.html')
 
+@app.route('/enrollment')
+def enrollment():
+    return render_template('enrollment.html')
 @app.route('/stats')
 def stats():
     return render_template('stats.html')
