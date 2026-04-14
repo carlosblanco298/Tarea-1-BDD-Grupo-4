@@ -39,14 +39,14 @@
                 const tournament_name = document.getElementById('tournament_name').value
                 document.getElementById("team_name").style.display = "inline"
                 response = await fetch(endpoint + `?team_name=${team_name}&tournament_name=${tournament_name}`);
-                table.innerHTML = "<tr><th>Gamertag</th><th>Etapa</th><th>KDA</th><th>kos_avg</th><th>restarts_avg</th><th>crecimiento_kda</th>";
+                table.innerHTML = "<tr><th>Gamertag</th><th>Etapa</th><th>KDA</th><th>kos_avg</th><th>restarts_avg</th><th>assists_avg</th><th>crecimiento_kda</th>";
             
                 const data = await response.json();
                 const result = data.result;
 
                 result.map((obj) => {
                     console.log(obj)
-                    table.innerHTML += `<tr><td>${obj.gamertag}</td><td>${obj.etapa}</td><td>${obj.kda}</td><td>${obj.kos_avg}</td><td>${obj.restarts_avg}</td><td>${obj.crecimiento_kda}</td>`
+                    table.innerHTML += `<tr><td>${obj.gamertag}</td><td>${obj.etapa}</td><td>${obj.kda}</td><td>${obj.kos_avg}</td><td>${obj.restarts_avg}</td><td>${obj.assists_avg}</td><td>${obj.crecimiento_kda}</td>`
                 })
 
             } else {
