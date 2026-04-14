@@ -1,7 +1,7 @@
 from psycopg2.extras import RealDictCursor
 from config.db import get_db, release_db
 
-def get_players_ranking():
+def get_players_ranking(tournament_name):
     conn = None
     try:
         conn = get_db()
@@ -19,16 +19,20 @@ def get_players_ranking():
                 SUM(kos) AS total_kos,
                 SUM(restarts) AS total_restarts,
                 SUM(assists) AS total_assists,
-                COUNT(id_partida) AS partidas,
+                COUNT(ED.id_partida) AS partidas,
+                P.id_torneo,
                 COALESCE(ROUND(CAST(SUM(kos) AS NUMERIC) / NULLIF(SUM(restarts), 0), 2), 0) AS kd_ratio
-                FROM Estadisticas_Jugador
-                GROUP BY gamertag
-                HAVING COUNT(id_partida) >= 2
+                FROM Estadisticas_Jugador ED
+                JOIN Partidas P ON P.id_partida = ED.id_partida
+                JOIN Torneos T ON T.id_torneo = P.id_torneo
+                WHERE T.nombre = %s
+                GROUP BY gamertag, P.id_torneo
+                HAVING COUNT(ED.id_partida) >= 2
             ) as T
             JOIN (
                 SELECT gamertag, nombre_equipo FROM Jugadores
             ) as JE ON JE.gamertag = T.gamertag
-            """)
+            """, (tournament_name,))
             result = cursor.fetchall()
 
         return {"result": result}
@@ -38,12 +42,12 @@ def get_players_ranking():
         if conn is not None:
             release_db(conn)
 
-def get_team_evolution(name):
+def get_team_evolution(team_name, tournament_name):
     conn = None
     try:
         conn = get_db()
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            if name != "none":
+            if team_name != "none":
                 cursor.execute("""
                 SELECT *,
                     COALESCE(ROUND(CAST(kda - LAG(kda) OVER(PARTITION BY gamertag ORDER BY etapa ASC) AS NUMERIC), 2), 0)::FLOAT AS crecimiento_kda
@@ -60,19 +64,20 @@ def get_team_evolution(name):
                         ROUND(CAST(SUM(ED.kos) + SUM(ED.assists) AS NUMERIC) / NULLIF(SUM(ED.restarts), 0), 2)::FLOAT AS kda
                     FROM Estadisticas_Jugador ED
                     JOIN Partidas P ON P.id_partida = ED.id_partida
-                    JOIN Jugadores AS J ON J.gamertag = ED.gamertag
-                    WHERE J.nombre_equipo = %s
+                    JOIN Jugadores J ON J.gamertag = ED.gamertag
+                    JOIN Torneos T ON T.id_torneo = P.id_torneo
+                    WHERE J.nombre_equipo = %(nombre_equipo)s AND T.nombre = %(tournament_name)s
                     GROUP BY ED.gamertag, etapa
                 ) as sub
                 ORDER BY gamertag, etapa;
-                """, (name,))
+                """, {"nombre_equipo": team_name, "tournament_name": tournament_name})
 
                 result = cursor.fetchall()
 
             else:
                 result = "Por favor. Ingrese el nombre del equipo que desea revisar."
 
-        return {"team_name": name, "result": result}
+        return {"team_name": team_name, "result": result}
     except Exception as e:
         return {"db_error": str(e)}, 500
     finally:

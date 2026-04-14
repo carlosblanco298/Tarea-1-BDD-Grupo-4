@@ -5,9 +5,11 @@ stats_bp = Blueprint('stats', __name__)
 
 @stats_bp.route("/player_rankings", methods=["GET"])
 def player_ranking():
-    return get_players_ranking()
+    tournament_name = request.args.get("tournament_name", "none")
+    return get_players_ranking(tournament_name)
 
 @stats_bp.route("/team_evolutions", methods=["GET"])
 def team_evolv():
-    name = request.args.get("team_name", "none")
-    return get_team_evolution(name)
+    team_name = request.args.get("team_name", "none")
+    tournament_name = request.args.get("tournament_name", "none")
+    return get_team_evolution(team_name, tournament_name)
