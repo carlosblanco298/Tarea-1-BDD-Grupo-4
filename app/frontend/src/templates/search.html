@@ -4,6 +4,12 @@
 
 {% block content %}
 
+<style>
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+    th { background-color: #f4f4f4; }
+</style>
+
 <div class="container">
     <h1>Buscador de Jugadores y Equipos</h1>
 
@@ -38,13 +44,13 @@
             </tr>
         </thead>
         <tbody id="teams-body"></tbody>
-    </table>"
+    </table>
 </div>
 
 <script>
 async function performSearch() {
     const type = document.getElementById('search-type').value;
-    const query = document.getElementById('search-input').values;
+    const query = document.getElementById('search-input').value;
 
     document.getElementById('players-table').style.display = 'none';
     document.getElementById('teams-table').style.display = 'none';
@@ -79,7 +85,7 @@ async function performSearch() {
                 <tr>
                     <td>${team.nombre_equipo}</td>
                     <td>${team.fecha_creacion}</td>
-                    <td>${team.capitan}</td>
+                    <td>${team.gamertag_capitan}</td>
                 </tr>
             `;
         });

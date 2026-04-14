@@ -33,6 +33,9 @@ def sponsors():
 def search_page():
     return render_template('search.html')
 
+@app.route('/torneos')
+def torneos_page():
+    return render_template('torneos.html')
 @app.route('/enrollment')
 def enrollment():
     return render_template('enrollment.html')
