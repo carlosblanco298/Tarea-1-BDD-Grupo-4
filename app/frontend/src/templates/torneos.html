@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div clas="container">
+<div class="container">
     <h1>Torneos Disponibles</h1>
 
     <div id="tournaments-list" class="cards">
@@ -14,7 +14,9 @@
     <div id="tournament-details" style="display:none; margin-top: 40px; border-top: 2px solid #ccc; padding-top: 20px;">
         <h2 id="details-title">Detalles del Torneo</h2>
         <h3>Equipos Inscritos y sponsors</h3>
-        <div styles="flex: 1;">
+        <div style="flex: 1;">
+            <h4>Equipos</h4>
+            <ul id="teams-list"></ul>
             <h4>Sponsors</h4>
             <ul id="sponsors-list"></ul>
         </div>
@@ -61,8 +63,9 @@ async function fetchTournaments() {
         const listDiv = document.getElementById('tournaments-list');
         listDiv.innerHTML = '';
         result.data.forEach(t => {
+            const safeName = String(t.nombre).replace(/'/g, "\\'");
             listDiv.innerHTML += `
-                <div class="card" style="cursor:pointer; borser: 1px solid #ccc; padding: 15px; margin-bottom: 10px;" onclick="fetchTournamentDetails(${t.id_torneo}, '${t.nombre}')">
+                <div class="card" style="cursor:pointer; border: 1px solid #ccc; padding: 15px; margin-bottom: 10px;" onclick="fetchTournamentDetails(${t.id_torneo}, '${t.nombre}')">
                     <h3>${t.nombre}</h3>
                     <p><strong>Juego:</strong> ${t.videojuego}</p>
                     <p><strong>Fechas:</strong> ${t.fecha_inicio} a ${t.fecha_fin}</p>
@@ -77,12 +80,13 @@ async function fetchTournaments() {
 
 async function fetchTournamentDetails(id_torneo, nombre_torneo) {
     try {
-        document.getElementById('detail-title').innerText = `Detallers: ${nombre_torneo}`;
-        document.getElememtById('tournament-details').style.display = 'block';
+        document.getElementById('details-title').innerText = `Detalles: ${nombre_torneo}`;
+        document.getElementById('tournament-details').style.display = 'block';
 
         const response = await fetch(`/api/tournaments/${id_torneo}`);
         const result = await response.json();
         const data = result.data;
+        console.log(data)
 
         const teamsList = document.getElementById('teams-list');
         teamsList.innerHTML = data.equipos_inscritos.map(e => `<li>${e.nombre_equipo}</li>`).join('');
@@ -103,7 +107,7 @@ async function fetchTournamentDetails(id_torneo, nombre_torneo) {
         `).join('');
 
         const matchesBody = document.getElementById('matches-body');
-        matchesBody.innerHTML = data.partidas_jugadas.map(m => `
+        matchesBody.innerHTML = data.partidas.map(m => `
             <tr>
                 <td>${new Date(m.fecha_hora).toLocaleString()}</td>
                 <td>${m.fase}</td>
