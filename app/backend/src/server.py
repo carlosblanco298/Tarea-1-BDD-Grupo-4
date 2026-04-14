@@ -36,6 +36,7 @@ def search_page():
 @app.route('/torneos')
 def torneos_page():
     return render_template('torneos.html')
+
 @app.route('/enrollment')
 def enrollment():
     return render_template('enrollment.html')
