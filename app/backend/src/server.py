@@ -15,7 +15,6 @@ app = Flask(__name__,
     template_folder=template_dir,
     static_folder=static_dir
 )
-app = Flask(__name__)
 
 app.register_blueprint(stats_bp, url_prefix='/api/stats')
 app.register_blueprint(sponsor_bp, url_prefix='/api/sponsors')
