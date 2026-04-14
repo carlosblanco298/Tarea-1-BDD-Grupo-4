@@ -32,9 +32,11 @@ def sponsors():
 @app.route('/search')
 def search_page():
     return render_template('search.html')
+
 @app.route('/enrollment')
 def enrollment():
     return render_template('enrollment.html')
+
 @app.route('/stats')
 def stats():
     return render_template('stats.html')
