@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Estadísticas{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Página de Estadísticas</h1>
+
+    <div>
+        <label for="ranking">Elige un tipo de ranking:</label>
+        <select name="ranking" id="ranking">
+            <option value="jugadores">Ranking de Jugadores</option>
+            <option value="equipo">Ranking de Equipo</option>
+        </select>
+
+        <input type="text" style="display: none" id="team_name" placeholder="Ej. Sentados" value="">
+
+        <button onclick="fetchStats()">Buscar</button>
+    </div>
+
+    <table id="table">
+        
+    </table>
+</div>
+
+<script>
+    async function fetchStats() {
+        const tipo_ranking = document.getElementById("ranking").value;
+        const endpoint = tipo_ranking === "jugadores"
+            ? "/api/stats/player_rankings"
+            : "/api/stats/team_evolutions";
+
+        try {
+            let response;
+            const table = document.getElementById("table");
+            if (tipo_ranking !== "jugadores") {
+                const team_name = document.getElementById('team_name').value
+                document.getElementById("team_name").style.display = "inline"
+                response = await fetch(endpoint + `?team_name=${team_name}`);
+                table.innerHTML = "<tr><th>Gamertag</th><th>Etapa</th><th>KDA</th><th>kos_avg</th><th>restarts_avg</th><th>crecimiento_kda</th>";
+            
+                const data = await response.json();
+                const result = data.result;
+
+                result.map((obj) => {
+                    console.log(obj)
+                    table.innerHTML += `<tr><td>${obj.gamertag}</td><td>${obj.etapa}</td><td>${obj.kda}</td><td>${obj.kos_avg}</td><td>${obj.restarts_avg}</td><td>${obj.crecimiento_kda}</td>`
+                })
+
+            } else {
+                document.getElementById("team_name").style.display = "none"
+                response = await fetch(endpoint);
+                table.innerHTML = "<tr><th>Gamertag</th><th>kd_ratio</th><th>nombre_equipo</th><th>ranking</th><th>total_assists</th><th>total_kos</th><th>total_restarts</th></tr>";
+            
+                const data = await response.json();
+                const result = data.result;
+
+                result.map((obj) => {
+                    console.log(obj)
+                    table.innerHTML += `<tr><td>${obj.gamertag}</td><td>${obj.kd_ratio}</td><td>${obj.nombre_equipo}</td><td>${obj.posicion_ranking}</td><td>${obj.total_assists}</td><td>${obj.total_kos}</td><td>${obj.total_restarts}</td></tr>`
+                })
+            }
+
+            
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+        }
+    }
+
+    document.getElementById("ranking").addEventListener("change", fetchStats);
+    fetchStats();
+</script>
+
+{% endblock %}
