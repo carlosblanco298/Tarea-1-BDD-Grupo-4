@@ -34,5 +34,9 @@ def sponsors():
 def search_page():
     return render_template('search.html')
 
+@app.route('/torneos')
+def torneos_page():
+    return render_template('torneos.html')
+
 if __name__ == "__main__":
     app.run(host="localhost", port=3000)
