@@ -3,25 +3,30 @@
 {% block title %}Estadísticas{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Página de Estadísticas</h1>
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2 text-gray-800 dark:text-gray-100">Estadísticas</h1>
+    <p class="text-gray-600 dark:text-gray-300 mb-6">Consulta el ranking de jugadores o la evolución de equipos en los torneos.</p>
 
-    <div>
-        <label for="ranking">Elige un tipo de ranking:</label>
-        <select name="ranking" id="ranking">
-            <option value="jugadores">Ranking de Jugadores</option>
-            <option value="equipo">Ranking de Equipo</option>
-        </select>
+    <div class="flex flex-wrap gap-4 items-end mb-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <div class="flex flex-col w-full sm:w-auto">
+            <label for="ranking" class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Elige un tipo de ranking:</label>
+            <select name="ranking" id="ranking" class="border border-gray-300 dark:border-gray-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-gray-900 dark:text-gray-100 w-full sm:w-48">
+                <option value="jugadores">Ranking de Jugadores</option>
+                <option value="equipo">Ranking de Equipo</option>
+            </select>
+        </div>
 
-        <input type="text" style="display: none" id="team_name" placeholder="Ej. Sentados" value="">
-        <input type="text" id="tournament_name" placeholder="Ej. Calorant Champions Tour" value="">
+        <input type="text" style="display: none" id="team_name" placeholder="Ej. Sentados" value="" class="border border-gray-300 dark:border-gray-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm w-full sm:w-48 dark:bg-gray-900 dark:text-gray-100">
+        <input type="text" id="tournament_name" placeholder="Ej. Calorant Champions Tour" value="" class="border border-gray-300 dark:border-gray-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm w-full sm:w-64 dark:bg-gray-900 dark:text-gray-100">
 
-        <button onclick="fetchStats()">Buscar</button>
+        <button onclick="fetchStats()" class="bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm cursor-pointer w-full sm:w-auto">Buscar</button>
     </div>
 
-    <table id="table">
-        
-    </table>
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <table id="table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left">
+            
+        </table>
+    </div>
 </div>
 
 <script>
@@ -35,33 +40,81 @@
             let response;
             const table = document.getElementById("table");
             if (tipo_ranking !== "jugadores") {
-                const team_name = document.getElementById('team_name').value
-                const tournament_name = document.getElementById('tournament_name').value
-                document.getElementById("team_name").style.display = "inline"
+                document.getElementById("team_name").style.display = "inline-block";
+                const team_name = document.getElementById('team_name').value;
+                const tournament_name = document.getElementById('tournament_name').value;
                 response = await fetch(endpoint + `?team_name=${team_name}&tournament_name=${tournament_name}`);
-                table.innerHTML = "<tr><th>Gamertag</th><th>Etapa</th><th>KDA</th><th>kos_avg</th><th>restarts_avg</th><th>assists_avg</th><th>crecimiento_kda</th>";
-            
                 const data = await response.json();
-                const result = data.result;
+                const result = data.result || [];
 
-                result.map((obj) => {
-                    console.log(obj)
-                    table.innerHTML += `<tr><td>${obj.gamertag}</td><td>${obj.etapa}</td><td>${obj.kda}</td><td>${obj.kos_avg}</td><td>${obj.restarts_avg}</td><td>${obj.assists_avg}</td><td>${obj.crecimiento_kda}</td>`
-                })
+                let html = `
+                    <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Gamertag</th>
+                            <th class="px-6 py-3 text-left">Etapa</th>
+                            <th class="px-6 py-3 text-left">KDA</th>
+                            <th class="px-6 py-3 text-left">kos_avg</th>
+                            <th class="px-6 py-3 text-left">restarts_avg</th>
+                            <th class="px-6 py-3 text-left">assists_avg</th>
+                            <th class="px-6 py-3 text-left">crecimiento_kda</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                `;
+                
+                result.forEach((obj) => {
+                    html += `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-medium">${obj.gamertag || ''}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.etapa || ''}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.kda || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.kos_avg || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.restarts_avg || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.assists_avg || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-semibold text-blue-600 dark:text-blue-400">${obj.crecimiento_kda || 0}</td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody>`;
+                table.innerHTML = html;
 
             } else {
-                document.getElementById("team_name").style.display = "none"
-                const tournament_name = document.getElementById('tournament_name').value
+                document.getElementById("team_name").style.display = "none";
+                const tournament_name = document.getElementById('tournament_name').value;
                 response = await fetch(endpoint + `?tournament_name=${tournament_name}`);
-                table.innerHTML = "<tr><th>Gamertag</th><th>kd_ratio</th><th>nombre_equipo</th><th>ranking</th><th>total_assists</th><th>total_kos</th><th>total_restarts</th></tr>";
-            
                 const data = await response.json();
-                const result = data.result;
+                const result = data.result || [];
 
-                result.map((obj) => {
-                    console.log(obj)
-                    table.innerHTML += `<tr><td>${obj.gamertag}</td><td>${obj.kd_ratio}</td><td>${obj.nombre_equipo}</td><td>${obj.posicion_ranking}</td><td>${obj.total_assists}</td><td>${obj.total_kos}</td><td>${obj.total_restarts}</td></tr>`
-                })
+                let html = `
+                    <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Gamertag</th>
+                            <th class="px-6 py-3 text-left">kd_ratio</th>
+                            <th class="px-6 py-3 text-left">nombre_equipo</th>
+                            <th class="px-6 py-3 text-left">ranking</th>
+                            <th class="px-6 py-3 text-left">total_assists</th>
+                            <th class="px-6 py-3 text-left">total_kos</th>
+                            <th class="px-6 py-3 text-left">total_restarts</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                `;
+                
+                result.forEach((obj) => {
+                    html += `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-medium">${obj.gamertag || ''}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.kd_ratio || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.nombre_equipo || ''}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-bold text-gray-900 dark:text-gray-100">${obj.posicion_ranking || ''}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.total_assists || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.total_kos || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${obj.total_restarts || 0}</td>
+                        </tr>
+                    `;
+                });
+                html += `</tbody>`;
+                table.innerHTML = html;
             }
 
             

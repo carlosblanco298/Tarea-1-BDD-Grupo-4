@@ -4,47 +4,46 @@
 
 {% block content %}
 
-<style>
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
-    th { background-color: #f4f4f4; }
-</style>
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2 text-gray-800 dark:text-gray-100">Buscador de Jugadores y Equipos</h1>
+    <p class="text-gray-600 dark:text-gray-300 mb-6">Selecciona el tipo de búsqueda, ingresa tu término y haz clic en Buscar.</p>
 
-<div class="container">
-    <h1>Buscador de Jugadores y Equipos</h1>
-
-    <div class ="search-box">
-        <select id="search-type">
+    <div class="flex flex-col sm:flex-row gap-4 items-center mb-8 max-w-2xl bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <select id="search-type" class="w-full sm:w-auto border border-gray-300 dark:border-gray-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-gray-900 dark:text-gray-100">
             <option value="players">Jugadores (Gamertag o País)</option>
             <option value="teams">Equipos (nombre)</option>
         </select>
 
-        <input type="text" id="search-input" placeholder="Ingresa tu búsqueda...">
-        <button onclick="performSearch()">Buscar</button>
+        <input type="text" id="search-input" placeholder="Ingresa tu búsqueda..." class="flex-grow w-full sm:w-auto border border-gray-300 dark:border-gray-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm dark:bg-gray-900 dark:text-gray-100">
+        <button onclick="performSearch()" class="w-full sm:w-auto bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm cursor-pointer">Buscar</button>
     </div>
 
-    <table class="table" id="players-table" style="display:none">
-        <thead>
-            <tr>
-                <th>Gamertag</th>
-                <th>Nombre Real</th>
-                <th>País</th>
-                <th>Equipo</th>
-            </tr>
-        </thead>
-        <tbody id="players-body"></tbody>
-    </table>
+    <div id="players-wrapper" style="display:none" class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left" id="players-table">
+            <thead class="bg-gray-50 dark:bg-gray-750 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-gray-700">
+                <tr>
+                    <th class="px-6 py-3">Gamertag</th>
+                    <th class="px-6 py-3">Nombre Real</th>
+                    <th class="px-6 py-3">País</th>
+                    <th class="px-6 py-3">Equipo</th>
+                </tr>
+            </thead>
+            <tbody id="players-body" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+        </table>
+    </div>
     
-    <table class="table" id="teams-table" style="display:none">
-        <thead>
-            <tr>
-                <th>Nombre Equipo</th>
-                <th>Fecha Creación</th>
-                <th>Capitán</th>
-            </tr>
-        </thead>
-        <tbody id="teams-body"></tbody>
-    </table>
+    <div id="teams-wrapper" style="display:none" class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left" id="teams-table">
+            <thead class="bg-gray-50 dark:bg-gray-750 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-gray-700">
+                <tr>
+                    <th class="px-6 py-3">Nombre Equipo</th>
+                    <th class="px-6 py-3">Fecha Creación</th>
+                    <th class="px-6 py-3">Capitán</th>
+                </tr>
+            </thead>
+            <tbody id="teams-body" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -52,8 +51,8 @@ async function performSearch() {
     const type = document.getElementById('search-type').value;
     const query = document.getElementById('search-input').value;
 
-    document.getElementById('players-table').style.display = 'none';
-    document.getElementById('teams-table').style.display = 'none';
+    document.getElementById('players-wrapper').style.display = 'none';
+    document.getElementById('teams-wrapper').style.display = 'none';
 
     if (type === 'players') {
         const response = await fetch(`/api/search/players?q=${query}`);
@@ -64,15 +63,15 @@ async function performSearch() {
         
         result.data.forEach(player => {
             tbody.innerHTML += `
-                <tr>
-                    <td>${player.gamertag}</td>
-                    <td>${player.nombre_real}</td>
-                    <td>${player.pais}</td>
-                    <td>${player.nombre_equipo}</td>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-medium">${player.gamertag || ''}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${player.nombre_real || ''}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${player.pais || ''}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${player.nombre_equipo || ''}</td>
                 </tr>
             `;
         });
-        document.getElementById('players-table').style.display = 'table';
+        document.getElementById('players-wrapper').style.display = 'block';
     } else {
         const response = await fetch(`/api/search/teams?q=${query}`);
         const result = await response.json();
@@ -82,14 +81,14 @@ async function performSearch() {
 
         result.data.forEach(team => {
             tbody.innerHTML += `
-                <tr>
-                    <td>${team.nombre_equipo}</td>
-                    <td>${team.fecha_creacion}</td>
-                    <td>${team.gamertag_capitan}</td>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-medium">${team.nombre_equipo || ''}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${team.fecha_creacion || ''}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${team.gamertag_capitan || ''}</td>
                 </tr>
             `;
         });
-        document.getElementById('teams-table').style.display = 'table';
+        document.getElementById('teams-wrapper').style.display = 'block';
     }
 }
 </script>

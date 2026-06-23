@@ -3,25 +3,28 @@
 {% block title %}Sponsors{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Sponsors por Videojuego</h1>
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2 text-gray-800 dark:text-gray-100">Sponsors por Videojuego</h1>
+    <p class="text-gray-600 dark:text-gray-300 mb-6">Busca patrocinadores que han auspiciado todos los torneos de un videojuego en particular.</p>
     
-    <div class="search">
-        <input type="text" id="videogame-input" placeholder="Ej: Calorant">
-        <button onclick="fetchSponsors()">Buscar</button>
+    <div class="flex flex-col sm:flex-row gap-4 items-center mb-8 max-w-2xl bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <input type="text" id="videogame-input" placeholder="Ej: Calorant" class="flex-grow w-full sm:w-auto border border-gray-300 dark:border-gray-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm dark:bg-gray-900 dark:text-gray-100">
+        <button onclick="fetchSponsors()" class="w-full sm:w-auto bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm cursor-pointer">Buscar</button>
     </div>
 
-    <table id="table" style="display:none">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Industria</th>
-                <th>Total Aportado</th>
-            </tr>
-        </thead>
-        <tbody id="sponsors-body">
-        </tbody>
-    </table>
+    <div id="table-wrapper" style="display:none" class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <table id="table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left">
+            <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-gray-700">
+                <tr>
+                    <th class="px-6 py-3">Nombre</th>
+                    <th class="px-6 py-3">Industria</th>
+                    <th class="px-6 py-3">Total Aportado</th>
+                </tr>
+            </thead>
+            <tbody id="sponsors-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -35,15 +38,15 @@ async function fetchSponsors() {
     
     data.data.forEach(sponsor => {
         tbody.innerHTML += `
-            <tr>
-                <td>${sponsor.nombre}</td>
-                <td>${sponsor.industria}</td>
-                <td>${sponsor.total_aportado}</td>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-medium">${sponsor.nombre || ''}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">${sponsor.industria || ''}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 font-semibold text-green-600 dark:text-green-400">$${sponsor.total_aportado || 0}</td>
             </tr>
         `;
     });
 
-    document.getElementById('table').style.display = 'table';
+    document.getElementById('table-wrapper').style.display = 'block';
 }
 </script>
 {% endblock %}

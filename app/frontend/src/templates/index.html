@@ -3,31 +3,35 @@
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Torneos de Videojuegos</h1>
-    <p>Selecciona una consulta para explorar los datos:</p>
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2 text-gray-800 dark:text-gray-100">Torneos de Videojuegos</h1>
+    <p class="text-gray-600 dark:text-gray-300 mb-8">Selecciona una consulta para explorar los datos:</p>
 
-    <div class="cards">
-        <a href="/sponsors" class="card">
-            <h2>Sponsors</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="/sponsors" class="block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md hover:border-blue-500 hover:-translate-y-1 transition-all cursor-pointer">
+            <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Sponsors</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Sponsors que han auspiciado todos los torneos de un videojuego.</p>
         </a>
-        <p>Sponsors que han auspiciado todos los torneos de un videojuego.</p>
-        <a href="/stats" class="card">
-            <h2>Stats</h2>
+
+        <a href="/stats" class="block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md hover:border-blue-500 hover:-translate-y-1 transition-all cursor-pointer">
+            <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Stats</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Ranking de jugadores + evolución por fase de un equipo seleccionable.</p>
         </a>
-        <p>Ranking de jugadores + evolución por fase de un equipo seleccionable.</p>
-        <a href="/enrollment" class="card">
-            <h2>Inscripciones</h2>
+
+        <a href="/enrollment" class="block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md hover:border-blue-500 hover:-translate-y-1 transition-all cursor-pointer">
+            <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Inscripciones</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Permitir inscribir un equipo en un torneo.</p>
         </a>
-        <p>Permitir inscribir un equipo en un torneo.</p>
-        <a href="/search" class="card">
-            <h2>Búsqueda</h2>
+
+        <a href="/search" class="block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md hover:border-blue-500 hover:-translate-y-1 transition-all cursor-pointer">
+            <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Búsqueda</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Buscador de jugadores y equipos.</p>
         </a>
-        <p>Buscador de jugadores y equipos.</p>
-        <a href="/torneos" class="card">
-            <h2>Torneos</h2>
+
+        <a href="/torneos" class="block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md hover:border-blue-500 hover:-translate-y-1 transition-all cursor-pointer">
+            <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Torneos</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Información de torneo a selección.</p>
         </a>
-        <p>Información de torneo a selección.</p>
     </div>
 </div>
 {% endblock %}

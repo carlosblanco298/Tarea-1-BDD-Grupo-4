@@ -4,19 +4,23 @@
 
 {% block content %}
 
-<div class="container">
-    <h1>Inscripción a Torneo</h1>
-    <p>Si desea inscribir un equipo a un torneo llene este formulario.</p>
+<div class="max-w-md mx-auto">
+    <h1 class="text-3xl font-bold mb-2 text-gray-800 dark:text-gray-100">Inscripción a Torneo</h1>
+    <p class="text-gray-600 dark:text-gray-300 mb-6">Si desea inscribir un equipo a un torneo llene este formulario.</p>
 
-    <form id="enroll_form" action="/api/team_enrollment" method="POST" style="display: flex; flex-direction: column; max-width: 50vw;">
-        <label for="tournament_name">Nombre del Torneo</label>
-        <input type="text" name="tournament_name" required>
-        <label for="team_name">Nombre del Equipo</label>
-        <input type="text" name="team_name" required>
-        <button type="submit" id="enroll_button">Inscribir equipo</button>
+    <form id="enroll_form" action="/api/team_enrollment" method="POST" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col gap-5">
+        <div>
+            <label for="tournament_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Nombre del Torneo</label>
+            <input type="text" name="tournament_name" id="tournament_name" required class="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-md px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
+        </div>
+        <div>
+            <label for="team_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Nombre del Equipo</label>
+            <input type="text" name="team_name" id="team_name" required class="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-md px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
+        </div>
+        <button type="submit" id="enroll_button" class="w-full bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm cursor-pointer mt-2">Inscribir equipo</button>
     </form>
 
-    <p id="status_message"></p>
+    <p id="status_message" class="mt-4 text-center text-sm font-semibold"></p>
 </div>
 
 <script>
@@ -43,9 +47,9 @@
 
         const status_message = document.getElementById("status_message")
         if (data.status === "success") {
-            status_message.style.color = "green";
+            status_message.className = "mt-4 text-center text-sm font-semibold text-green-600 dark:text-green-400";
         } else {
-            status_message.style.color = "red";
+            status_message.className = "mt-4 text-center text-sm font-semibold text-red-600 dark:text-red-400";
         }
 
         status_message.innerText = data.message;
